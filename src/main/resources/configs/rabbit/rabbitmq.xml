@@ -10,6 +10,8 @@
 
     <context:property-placeholder location="classpath:configs/properties/setting_using.properties" />
 
+    <rabbit:annotation-driven/>
+
     <!--  定义cacheMode为channel的 connectionFactory,此connectionFactory可用于支持自动往服务器broker产生 exchange和queue -->
     <bean id="cacheChannelConnectionFactory" class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
         <property name="host" value="${rabbitmq.host}" />
@@ -20,12 +22,19 @@
         <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}"/>
     </bean>
 
+    <!-- 消费者监听容器 -->
+    <bean id="rabbitListenerContainerFactory" class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
+        <property name="connectionFactory" ref="cacheChannelConnectionFactory"/>
+        <property name="concurrentConsumers" value="3"/>
+        <property name="maxConcurrentConsumers" value="10"/>
+    </bean>
+
     <!--===============================================定义发布消息的template===============================================================  -->
 
     <!-- 发布延迟消息的template -->
     <!--定义rabbit template用于数据的接收和发送,retry-template:template连接异常重试,比如连接connect-timeout重试,
     	这里的user-id-expression用于发送验证,如果userID与创建connection的factory所用的username不一致则会发送失败-->
-    <rabbit:template id="amqpDelayTemplate"  connection-factory="cacheChannelConnectionFactory"
+    <rabbit:template id="rabbitTemplate"  connection-factory="cacheChannelConnectionFactory"
                      user-id-expression="'admin'" retry-template="retryTemplate"/>
 
     <!--	失败重试template  -->
@@ -38,4 +47,9 @@
             </bean>
         </property>
     </bean>
+
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+    <rabbit:admin connection-factory="cacheChannelConnectionFactory" />
+
+    <import resource="classpath:configs/rabbit/mq-binding-direct.xml"/>
 </beans>
