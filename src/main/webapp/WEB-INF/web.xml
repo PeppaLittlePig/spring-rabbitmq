@@ -4,7 +4,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:conf/spring.xml;
+            classpath:configs/spring/spring.xml;
         </param-value>
     </context-param>
     <!-- Spring字符集过滤器 -->
@@ -52,7 +52,7 @@
         </servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:conf/spring-mvc.xml</param-value>
+            <param-value>classpath:configs/spring/spring-mvc.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

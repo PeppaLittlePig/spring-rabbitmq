@@ -10,4 +10,6 @@
     <context:component-scan base-package="com.wangzh.springrabbit">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+
+    <import resource="classpath:configs/rabbit/rabbitmq.xml"/>
 </beans>

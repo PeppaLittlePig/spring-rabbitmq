@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/rabbit
+     	http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd">
+
+    <context:property-placeholder location="classpath:configs/properties/setting_using.properties" />
+
+    <!--  定义cacheMode为channel的 connectionFactory,此connectionFactory可用于支持自动往服务器broker产生 exchange和queue -->
+    <bean id="cacheChannelConnectionFactory" class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+        <property name="host" value="${rabbitmq.host}" />
+        <property name="port" value="${rabbitmq.port}" />
+        <property name="username" value="${rabbitmq.username}" />
+        <property name="password" value="${rabbitmq.password}" />
+        <property name="cacheMode" value="${rabbitmq.cacheMode.channel}"/>
+        <property name="channelCacheSize" value="${rabbitmq.channelCacheSize}"/>
+    </bean>
+
+    <!--===============================================定义发布消息的template===============================================================  -->
+
+    <!-- 发布延迟消息的template -->
+    <!--定义rabbit template用于数据的接收和发送,retry-template:template连接异常重试,比如连接connect-timeout重试,
+    	这里的user-id-expression用于发送验证,如果userID与创建connection的factory所用的username不一致则会发送失败-->
+    <rabbit:template id="amqpDelayTemplate"  connection-factory="cacheChannelConnectionFactory"
+                     user-id-expression="'admin'" retry-template="retryTemplate"/>
+
+    <!--	失败重试template  -->
+    <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+        <property name="backOffPolicy">
+            <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+                <property name="initialInterval" value="500" />
+                <property name="multiplier" value="10.0" />
+                <property name="maxInterval" value="10000" />
+            </bean>
+        </property>
+    </bean>
+</beans>
