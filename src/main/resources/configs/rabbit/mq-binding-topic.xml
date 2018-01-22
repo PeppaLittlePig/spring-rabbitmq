@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/rabbit
+     	http://www.springframework.org/schema/rabbit/spring-rabbit-1.7.xsd">
+
+    <rabbit:queue id="test_topic_queue_1" name="test_topic_queue_1" durable="true" auto-delete="false" exclusive="false" />
+    <rabbit:queue id="test_topic_queue_2" name="test_topic_queue_2" durable="true" auto-delete="false" exclusive="false" />
+
+    <rabbit:topic-exchange name="exchange-topic" id="exchange-topic">
+        <rabbit:bindings>
+            <rabbit:binding pattern="topic.queue.*"  queue="test_topic_queue_1"/>
+             <rabbit:binding pattern="topic.queue.*"  queue="test_topic_queue_2"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+</beans>

@@ -12,7 +12,7 @@
        auto_delete: 当所有消费客户端连接断开后，是否自动删除队列  -->
     <rabbit:queue id="test_direct_queue" name="test_direct_queue" durable="true" auto-delete="false" exclusive="false" />
 
-    <rabbit:direct-exchange name="exchange-direct" durable="true" auto-delete="false" id="xk-test-mq-exchange">
+    <rabbit:direct-exchange name="exchange-direct" durable="true" auto-delete="false" id="exchange-direct">
         <rabbit:bindings>
             <rabbit:binding queue="test_direct_queue" key="test_direct_queue_key"/>
         </rabbit:bindings>

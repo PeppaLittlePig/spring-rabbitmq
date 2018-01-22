@@ -52,4 +52,5 @@
     <rabbit:admin connection-factory="cacheChannelConnectionFactory" />
 
     <import resource="classpath:configs/rabbit/mq-binding-direct.xml"/>
+    <import resource="classpath:configs/rabbit/mq-binding-topic.xml"/>
 </beans>

@@ -21,10 +21,27 @@ public class RabbitController {
     @Resource
     private RabbitTemplate rabbitTemplate;
 
+    /**
+     * 发送字符串消息至direct-exchange中,msg->(direct exchange)->(route key)->queue->(balance consumers)
+     * @param msg
+     * @return
+     */
     @RequestMapping("/direct")
     @ResponseBody
     public String direct(String msg){
         rabbitTemplate.convertAndSend("exchange-direct","test_direct_queue_key",msg);
-        return "done";
+        return "direct done";
+    }
+
+    /**
+     * 发送字符串消息至topic-exchange中,msg->(topic exchange)->(pattern)->queue->(balance consumers)
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/topic")
+    @ResponseBody
+    public String topic(String msg,String key){
+        rabbitTemplate.convertAndSend("exchange-topic",key,msg);
+        return "topic done";
     }
 }
